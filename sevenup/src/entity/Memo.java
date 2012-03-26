@@ -6,8 +6,6 @@ package entity;
 
 
 import memo.db.*;
-import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
 import memo.db.annotation.Transient;
 
@@ -113,14 +111,13 @@ public class Memo extends Dao<Memo> {
         Memo m = Memo.db.query("select * from memo");
         System.out.println(m.getName());
 
-        Connection conn = getConn();
         Memo memo1 = new Memo();
         memo1.setId(2L);
         memo1.setName("memo2");
         memo1.setContent("this is memo2");
-//        m.insert(conn, memo1);
 
-        Memo.db.update(getConn(),"update memo set parent_id = null where id > ? and id < 50",20L);
+
+//        Memo.db.update("update memo set parent_id = null where id > ? and id < 50",20L);
 
     }
 }

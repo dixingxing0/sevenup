@@ -17,7 +17,6 @@ import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.dbutils.BasicRowProcessor;
-import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
@@ -26,15 +25,16 @@ import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.apache.log4j.Logger;
 
 
+
 /**
- * dbutils dao ����
- * 
+ * dbutils dao 基类
+ *
  * @author dixingxing
  * @date Jan 17, 2012
  */
 public class Dao<T> {
 	private final static Logger logger = Logger.getLogger(Dao.class);
-	private final static String ERROR = "ִ��sql���";
+	private final static String ERROR = "执行sql出错";
 	private static QueryRunner runner;
 
 	protected final static DataSource ds;
@@ -45,20 +45,14 @@ public class Dao<T> {
 	}
 
 	/**
-	 * ��ʼ��dhcp���Դ
-	 * 
+	 * 初始化dhcp数据源
+	 *
 	 * @return
 	 */
 	private static synchronized DataSource initDataSource() {
 		BasicDataSource ds = new BasicDataSource();
 		ds.setDriverClassName("org.sqlite.JDBC");
-//		ds.setUsername(Config.jdbc_user_name);
-//		ds.setPassword(Config.jdbc_password);
-		ds.setUrl("jdbc:sqlite://E:/swing/memo/test.db");
-		// ds.setDriverClassName("oracle.jdbc.driver.OracleDriver");
-		// ds.setUsername("newhc");
-		// ds.setPassword("bfdds06fd");
-		// ds.setUrl("jdbc:oracle:thin:@192.168.20.203:1521:mktdb4");
+		ds.setUrl("jdbc:sqlite://E:/sevenup-git/sevenup/test.db");
 		return ds;
 	}
 
@@ -74,9 +68,9 @@ public class Dao<T> {
 	};
 
 	/**
-	 * 
-	 * ʹ���Զ���� MyBeanProcessor
-	 * 
+	 *
+	 * 使用自定义的 MyBeanProcessor
+	 *
 	 * @see DbUtilsBeanProcessor
 	 * @param clazz
 	 * @return
@@ -87,8 +81,8 @@ public class Dao<T> {
 	}
 
 	/**
-	 * ʹ���Զ���� MyBeanProcessor
-	 * 
+	 * 使用自定义的 MyBeanProcessor
+	 *
 	 * @see DbUtilsBeanProcessor
 	 * @param clazz
 	 * @return
@@ -99,37 +93,35 @@ public class Dao<T> {
 	}
 
 	/**
-	 * ��ȡ�������ж���ķ���
-	 * 
+	 * 获取在子类中定义的泛型
+	 *
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	private Class<T> poClass() {
-		// ʹ��cglib���?��ȡʵ������ΪgetSuperclass()
+		// 使用cglib代理，获取实际类型为getSuperclass()
 		return (Class<T>) ((ParameterizedType) getClass()
 				.getGenericSuperclass()).getActualTypeArguments()[0];
 	}
 
 	/**
-	 * ��Ĭ�ϵ����Դ�л�ȡһ����ݿ�l��,����setAutoCommit(false)
-	 * 
+	 * 从默认的数据源中获取一个数据库连接,并且setAutoCommit(false)
+	 *
 	 * @return
 	 */
 	public static Connection getConn() {
-
 		try {
 			Connection conn = ds.getConnection();
-//			conn.setAutoCommit(false);
 			return conn;
 		} catch (Exception e) {
-			throw new RuntimeException("��ȡ��ݿ�l��ʧ��", e);
+			throw new RuntimeException("获取数据库连接失败", e);
 		}
 	}
 
 	/**
-	 * 
-	 * ��ѯ�����б�
-	 * 
+	 *
+	 * 查询返回列表
+	 *
 	 * @param sql
 	 * @param params
 	 * @return
@@ -145,8 +137,8 @@ public class Dao<T> {
 	}
 
 	/**
-	 * ��ѯ���ص������
-	 * 
+	 * 查询返回单个对象
+	 *
 	 * @param sql
 	 * @param params
 	 * @return
@@ -163,8 +155,8 @@ public class Dao<T> {
 	}
 
 	/**
-	 * ��ѯlong�����
-	 * 
+	 * 查询long型数据
+	 *
 	 * @param sql
 	 * @param params
 	 * @return
@@ -181,9 +173,9 @@ public class Dao<T> {
 	}
 
 	/**
-	 * ��ѯint�����
-	 * 
-	 * 
+	 * 查询int型数据
+	 *
+	 *
 	 * @param sql
 	 * @param params
 	 * @return
@@ -200,24 +192,14 @@ public class Dao<T> {
 	}
 
 	/**
-	 * ִ��INSERT/UPDATE/DELETE���
-	 * 
+	 * 执行INSERT/UPDATE/DELETE语句
+	 *
 	 * @param conn
 	 * @param sql
 	 * @param params
 	 * @return
 	 */
-	public int update(Connection conn, String sql, Object... params) {
-		logger.debug(new SqlHolder(sql, params));
-		try {
-			return runner.update(conn, sql, params);
-		} catch (SQLException e) {
-			logger.error(ERROR, e);
-			throw new RuntimeException(ERROR, e);
-		}
-	}
-
-    public int update( String sql, Object... params) {
+	public int update(String sql, Object... params) {
 		logger.debug(new SqlHolder(sql, params));
 		try {
 			return runner.update(getConn(), sql, params);
@@ -229,56 +211,26 @@ public class Dao<T> {
 
 	/**
 	 * update
-	 * 
-	 * 
-	 * @param conn
-	 * @param po
-	 * @return
-	 */
-	public int update(Connection conn, Object po) {
-		SqlHolder holder = SqlBuilder.buildUpdate(po);
-		return update(conn, holder.getSql(), holder.getParams());
-	}
-
-    /**
-	 * update
-	 *
-	 *
-	 * @param conn
-	 * @param po
 	 * @return
 	 */
 	public int update() {
 		SqlHolder holder = SqlBuilder.buildUpdate(this);
-		return update(getConn(), holder.getSql(), holder.getParams());
+		return update( holder.getSql(), holder.getParams());
 	}
 
 	/**
 	 * insert
-	 * 
-	 * @param conn
-	 * @param po
-	 * @return
-	 */
-	public int insert(Connection conn, Object po) {
-		SqlHolder holder = SqlBuilder.buildInsert(po);
-		return update(conn, holder.getSql(), holder.getParams());
-	}
-	/**
-	 * insert
-	 *
-	 * @param conn
-	 * @param po
 	 * @return
 	 */
 	public int insert() {
 		SqlHolder holder = SqlBuilder.buildInsert(this);
-		return update(getConn(), holder.getSql(), holder.getParams());
+		return update(holder.getSql(), holder.getParams());
 	}
+
 	/**
-	 * 
-	 * ��ѯ�б�
-	 * 
+	 *
+	 * 查询列表
+	 *
 	 * @param sql
 	 * @return Map<String, Object>
 	 */
@@ -300,17 +252,4 @@ public class Dao<T> {
 		page.setResult(queryList(page.getPageSql()));
 		return page;
 	}
-
-	public static void rollbackAndClose(Connection conn) {
-		logger.debug("�ع����񲢹ر�l��");
-		DbUtils.rollbackAndCloseQuietly(conn);
-	}
-
-	public static void commitAndClose(Connection conn) {
-		logger.debug("�ύ���񲢹ر�l��");
-		DbUtils.commitAndCloseQuietly(conn);
-	}
-
-
-    
 }

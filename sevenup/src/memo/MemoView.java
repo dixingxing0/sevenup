@@ -423,7 +423,7 @@ public class MemoView extends FrameView implements ActionListener {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(labelTitle)
-                .addContainerGap(227, Short.MAX_VALUE))
+                .addContainerGap(222, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel1);
@@ -436,7 +436,7 @@ public class MemoView extends FrameView implements ActionListener {
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -638,9 +638,6 @@ public class MemoView extends FrameView implements ActionListener {
             if (m.getId() != null) {
                 m.update();
             } else {
-                long id = Memo.db.queryLong("select max(id) from memo");
-                m.setId(id + 1);
-
                 DefaultMutableTreeNode parent = (DefaultMutableTreeNode) node.getParent();
                 if (parent.getUserObject().getClass().equals(Memo.class)) {
                     Memo p = (Memo) parent.getUserObject();
