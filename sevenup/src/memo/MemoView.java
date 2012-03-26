@@ -45,6 +45,7 @@ import chrriis.dj.nativeswing.swtimpl.components.HTMLEditorAdapter;
 import chrriis.dj.nativeswing.swtimpl.components.HTMLEditorSaveEvent;
 import chrriis.dj.nativeswing.swtimpl.components.JHTMLEditor;
 import java.awt.AWTException;
+import java.awt.CardLayout;
 import java.awt.Frame;
 import java.awt.Image;
 import java.awt.MenuItem;
@@ -59,6 +60,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
+import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 
 /**
@@ -215,19 +217,27 @@ public class MemoView extends FrameView implements ActionListener {
         });
 
 
+        jSplitPane2 = new javax.swing.JSplitPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
+//        treeMemo = new javax.swing.JTree();
+//        jPanel1 = new javax.swing.JPanel();
+        mainPanel.add(jSplitPane2, "card2");
 
-//        Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
-//
-//            public void eventDispatched(AWTEvent ae) {
-//                if (ae instanceof KeyEvent) {
-//                    KeyEvent e = (KeyEvent) ae;
-//                    if (e.getID() == KeyEvent.KEY_PRESSED || e.getKeyCode() == KeyEvent.VK_PRINTSCREEN) {
-//
-//                    }
-//                }
-//            }
-//
-//        }, AWTEvent.KEY_EVENT_MASK);
+    }
+
+    @Action
+    public void switchMemoLayout() {
+        System.out.println("1111");
+        CardLayout cardLayout = (CardLayout)mainPanel.getLayout();
+       cardLayout.next(mainPanel);
+    }
+
+    @Action
+     public void switchJobLayout() {
+        System.out.println("2222");
+       CardLayout cardLayout = (CardLayout)mainPanel.getLayout();
+       cardLayout.next(mainPanel);
+       
     }
 
     /**
@@ -282,7 +292,6 @@ public class MemoView extends FrameView implements ActionListener {
      * @param tn
      */
     private void appendChildren(Memo m, DefaultMutableTreeNode tn) {
-//            tn.setUserObject(m);
         List<Memo> children = m.getChildren();
         for (Memo c : children) {
             tn.add(new DefaultMutableTreeNode(c));
@@ -371,7 +380,7 @@ public class MemoView extends FrameView implements ActionListener {
 
         mainPanel = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
         treeMemo = new javax.swing.JTree();
         jPanel1 = new javax.swing.JPanel();
         labelTitle = new javax.swing.JLabel();
@@ -380,6 +389,9 @@ public class MemoView extends FrameView implements ActionListener {
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
+        switchMenu = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
         javax.swing.JSeparator statusPanelSeparator = new javax.swing.JSeparator();
         statusMessageLabel = new javax.swing.JLabel();
@@ -387,10 +399,11 @@ public class MemoView extends FrameView implements ActionListener {
         progressBar = new javax.swing.JProgressBar();
 
         mainPanel.setName("mainPanel"); // NOI18N
+        mainPanel.setLayout(new java.awt.CardLayout());
 
         jSplitPane1.setName("jSplitPane1"); // NOI18N
 
-        jScrollPane2.setName("jScrollPane2"); // NOI18N
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
 
         treeMemo.setName("treeMemo"); // NOI18N
         treeMemo.setRootVisible(false);
@@ -399,9 +412,9 @@ public class MemoView extends FrameView implements ActionListener {
                 TreeMemoHandler(evt);
             }
         });
-        jScrollPane2.setViewportView(treeMemo);
+        jScrollPane1.setViewportView(treeMemo);
 
-        jSplitPane1.setLeftComponent(jScrollPane2);
+        jSplitPane1.setLeftComponent(jScrollPane1);
 
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -423,21 +436,12 @@ public class MemoView extends FrameView implements ActionListener {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(labelTitle)
-                .addContainerGap(222, Short.MAX_VALUE))
+                .addContainerGap(227, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel1);
 
-        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
-        mainPanel.setLayout(mainPanelLayout);
-        mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 432, Short.MAX_VALUE)
-        );
-        mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
-        );
+        mainPanel.add(jSplitPane1, "card1");
 
         menuBar.setName("menuBar"); // NOI18N
 
@@ -459,6 +463,21 @@ public class MemoView extends FrameView implements ActionListener {
         helpMenu.add(aboutMenuItem);
 
         menuBar.add(helpMenu);
+
+        switchMenu.setText(resourceMap.getString("switchMenu.text")); // NOI18N
+        switchMenu.setName("switchMenu"); // NOI18N
+
+        jMenuItem1.setAction(actionMap.get("switchMemoLayout")); // NOI18N
+        jMenuItem1.setText(resourceMap.getString("jMenuItem1.text")); // NOI18N
+        jMenuItem1.setName("jMenuItem1"); // NOI18N
+        switchMenu.add(jMenuItem1);
+
+        jMenuItem2.setAction(actionMap.get("switchJobLayout")); // NOI18N
+        jMenuItem2.setText(resourceMap.getString("jMenuItem2.text")); // NOI18N
+        jMenuItem2.setName("jMenuItem2"); // NOI18N
+        switchMenu.add(jMenuItem2);
+
+        menuBar.add(switchMenu);
 
         statusPanel.setName("statusPanel"); // NOI18N
 
@@ -523,8 +542,10 @@ public class MemoView extends FrameView implements ActionListener {
     }//GEN-LAST:event_TreeMemoHandler
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JLabel labelTitle;
     private javax.swing.JPanel mainPanel;
@@ -533,8 +554,12 @@ public class MemoView extends FrameView implements ActionListener {
     private javax.swing.JLabel statusAnimationLabel;
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
+    private javax.swing.JMenu switchMenu;
     private javax.swing.JTree treeMemo;
     // End of variables declaration//GEN-END:variables
+   
+    private javax.swing.JSplitPane jSplitPane2;
+    private JScrollPane jScrollPane2;
     private final Timer messageTimer;
     private final Timer busyIconTimer;
     private final Icon idleIcon;
@@ -573,7 +598,6 @@ public class MemoView extends FrameView implements ActionListener {
 
 
             treeMemo.startEditingAtPath(path);
-//            textAreaContent.setText("");
             labelTitle.setText("");
 
 
@@ -608,18 +632,10 @@ public class MemoView extends FrameView implements ActionListener {
         public void editingCanceled(ChangeEvent e) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
             Memo m = (Memo) node.getUserObject();
-            System.out.println(m.getName());
-            System.out.println("==========编辑取消");
         }
 
         public void editingStopped(ChangeEvent e) {
-//            DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
-//            Memo m = (Memo) node.getUserObject();
-//
-//            m.setName(treeMemo.getCellEditor().getCellEditorValue().toString());
-//            m.update();
 
-            System.out.println("=======编辑结束");
         }
     }
 

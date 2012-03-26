@@ -22,7 +22,7 @@ public class MemoTest {
         Memo m = Memo.db.query("select * from memo where id=2");
         Assert.assertNotNull(m);
         m.setParentId(1L);
-        Memo.db.update(Memo.getConn(), m);
+        m.update();
         m = Memo.db.query("select * from memo where id=2");
         System.out.println(m.getParentId());
     }
@@ -30,8 +30,7 @@ public class MemoTest {
     @Test
     public void insert() throws SQLException {
         Long maxId = Memo.db.queryLong("select max(id) from memo ");
-        Connection conn = Memo.getConn();
-        conn.setAutoCommit(false);
+
         int i = 0;
         for (; i < 10; maxId++,i++) {
             Memo m = new Memo();
@@ -39,9 +38,9 @@ public class MemoTest {
             m.setName("name" + maxId);
             m.setParentId(1L);
             m.setContent("content" + maxId);
-            Memo.db.insert(conn, m);
+            m.insert();
         }
-//        Memo.commitAndClose(conn);
+
 
     }
 
