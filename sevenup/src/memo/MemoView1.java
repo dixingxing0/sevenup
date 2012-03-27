@@ -71,9 +71,9 @@ import javax.swing.WindowConstants;
 /**
  * The application's main frame.
  */
-public class MemoView extends FrameView implements ActionListener {
+public class MemoView1 extends FrameView implements ActionListener {
 
-    public MemoView(SingleFrameApplication app) {
+    public MemoView1(SingleFrameApplication app) {
         super(app);
 
         initComponents();
@@ -137,9 +137,9 @@ public class MemoView extends FrameView implements ActionListener {
 
         treeModel = new MemoTreeModel(getRoot());
 
-        treeMemo.setModel(treeModel);
-        treeMemo.setEditable(true);
-        treeMemo.getCellEditor().addCellEditorListener(new CellEditorAction());
+//        treeMemo.setModel(treeModel);
+//        treeMemo.setEditable(true);
+//        treeMemo.getCellEditor().addCellEditorListener(new CellEditorAction());
 //        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
 //        renderer.setLeafIcon(new ImageIcon("1.gif"));
 //        renderer.setClosedIcon(new ImageIcon("2.gif"));
@@ -170,12 +170,12 @@ public class MemoView extends FrameView implements ActionListener {
         NativeInterface.open();
         UIUtils.setPreferredLookAndFeel();
         panelRichText = (JPanel) createContent();
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(panelRichText, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE).addGroup(jPanel1Layout.createSequentialGroup().addGap(10, 10, 10).addComponent(labelTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE).addContainerGap()));
-        jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel1Layout.createSequentialGroup().addContainerGap().addComponent(labelTitle).addGap(8, 8, 8).addComponent(panelRichText, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)));
+//        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+//        jPanel1.setLayout(jPanel1Layout);
+//        jPanel1Layout.setHorizontalGroup(
+//                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(panelRichText, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE).addGroup(jPanel1Layout.createSequentialGroup().addGap(10, 10, 10).addComponent(labelTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE).addContainerGap()));
+//        jPanel1Layout.setVerticalGroup(
+//                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel1Layout.createSequentialGroup().addContainerGap().addComponent(labelTitle).addGap(8, 8, 8).addComponent(panelRichText, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)));
 
         this.frame = this.getFrame();
 
@@ -360,20 +360,16 @@ public class MemoView extends FrameView implements ActionListener {
     private void initComponents() {
 
         mainPanel = new javax.swing.JPanel();
+        jToolBar1 = new javax.swing.JToolBar();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
         jSplitPane1 = new javax.swing.JSplitPane();
         jScrollPane1 = new javax.swing.JScrollPane();
-        treeMemo = new javax.swing.JTree();
-        jPanel1 = new javax.swing.JPanel();
-        labelTitle = new javax.swing.JLabel();
-        menuBar = new javax.swing.JMenuBar();
-        javax.swing.JMenu fileMenu = new javax.swing.JMenu();
-        javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
-        javax.swing.JMenu helpMenu = new javax.swing.JMenu();
-        javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
-        switchMenu = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
+        jTree1 = new javax.swing.JTree();
+        jSplitPane3 = new javax.swing.JSplitPane();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
         statusPanel = new javax.swing.JPanel();
         javax.swing.JSeparator statusPanelSeparator = new javax.swing.JSeparator();
         statusMessageLabel = new javax.swing.JLabel();
@@ -381,101 +377,66 @@ public class MemoView extends FrameView implements ActionListener {
         progressBar = new javax.swing.JProgressBar();
 
         mainPanel.setName("mainPanel"); // NOI18N
-        mainPanel.setLayout(new java.awt.CardLayout());
+        mainPanel.setLayout(null);
+
+        jToolBar1.setRollover(true);
+        jToolBar1.setName("jToolBar1"); // NOI18N
+
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(memo.MemoApp.class).getContext().getResourceMap(MemoView1.class);
+        jButton1.setText(resourceMap.getString("jButton1.text")); // NOI18N
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setName("jButton1"); // NOI18N
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton1);
+
+        jButton2.setText(resourceMap.getString("jButton2.text")); // NOI18N
+        jButton2.setFocusable(false);
+        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setName("jButton2"); // NOI18N
+        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton2);
+
+        mainPanel.add(jToolBar1);
+        jToolBar1.setBounds(0, 0, 370, 30);
+
+        jTabbedPane1.setName("jTabbedPane1"); // NOI18N
 
         jSplitPane1.setName("jSplitPane1"); // NOI18N
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        treeMemo.setName("treeMemo"); // NOI18N
-        treeMemo.setRootVisible(false);
-        treeMemo.addTreeWillExpandListener(new javax.swing.event.TreeWillExpandListener() {
-            public void treeWillCollapse(javax.swing.event.TreeExpansionEvent evt)throws javax.swing.tree.ExpandVetoException {
-            }
-            public void treeWillExpand(javax.swing.event.TreeExpansionEvent evt)throws javax.swing.tree.ExpandVetoException {
-                treeWillExpandHandler(evt);
-            }
-        });
-        treeMemo.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                TreeMemoHandler(evt);
-            }
-        });
-        jScrollPane1.setViewportView(treeMemo);
+        jTree1.setName("jTree1"); // NOI18N
+        jScrollPane1.setViewportView(jTree1);
 
         jSplitPane1.setLeftComponent(jScrollPane1);
 
-        jPanel1.setName("jPanel1"); // NOI18N
+        jTabbedPane1.addTab(resourceMap.getString("jSplitPane1.TabConstraints.tabTitle"), jSplitPane1); // NOI18N
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(memo.MemoApp.class).getContext().getResourceMap(MemoView.class);
-        labelTitle.setText(resourceMap.getString("labelTitle.text")); // NOI18N
-        labelTitle.setName("labelTitle"); // NOI18N
+        jSplitPane3.setName("jSplitPane3"); // NOI18N
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(61, 61, 61)
-                .addComponent(labelTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(142, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(labelTitle)
-                .addContainerGap(222, Short.MAX_VALUE))
-        );
+        jScrollPane3.setName("jScrollPane3"); // NOI18N
 
-        jSplitPane1.setRightComponent(jPanel1);
-
-        mainPanel.add(jSplitPane1, "card1");
-
-        menuBar.setName("menuBar"); // NOI18N
-
-        fileMenu.setText(resourceMap.getString("fileMenu.text")); // NOI18N
-        fileMenu.setName("fileMenu"); // NOI18N
-
-        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(memo.MemoApp.class).getContext().getActionMap(MemoView.class, this);
-        exitMenuItem.setAction(actionMap.get("quit")); // NOI18N
-        exitMenuItem.setName("exitMenuItem"); // NOI18N
-        fileMenu.add(exitMenuItem);
-
-        menuBar.add(fileMenu);
-
-        helpMenu.setText(resourceMap.getString("helpMenu.text")); // NOI18N
-        helpMenu.setName("helpMenu"); // NOI18N
-
-        aboutMenuItem.setAction(actionMap.get("showAboutBox")); // NOI18N
-        aboutMenuItem.setName("aboutMenuItem"); // NOI18N
-        helpMenu.add(aboutMenuItem);
-
-        menuBar.add(helpMenu);
-
-        switchMenu.setText(resourceMap.getString("switchMenu.text")); // NOI18N
-        switchMenu.setName("switchMenu"); // NOI18N
-
-        jMenuItem1.setAction(actionMap.get("switchMemoLayout")); // NOI18N
-        jMenuItem1.setText(resourceMap.getString("jMenuItem1.text")); // NOI18N
-        jMenuItem1.setName("jMenuItem1"); // NOI18N
-        switchMenu.add(jMenuItem1);
-
-        jMenuItem2.setAction(actionMap.get("switchJobLayout")); // NOI18N
-        jMenuItem2.setText(resourceMap.getString("jMenuItem2.text")); // NOI18N
-        jMenuItem2.setName("jMenuItem2"); // NOI18N
-        switchMenu.add(jMenuItem2);
-
-        menuBar.add(switchMenu);
-
-        jMenu1.setText(resourceMap.getString("jMenu1.text")); // NOI18N
-        jMenu1.setName("jMenu1"); // NOI18N
-        jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                saveHandler(evt);
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
             }
-        });
-        menuBar.add(jMenu1);
+        ));
+        jTable1.setName("jTable1"); // NOI18N
+        jScrollPane3.setViewportView(jTable1);
+
+        jSplitPane3.setRightComponent(jScrollPane3);
+
+        jTabbedPane1.addTab(resourceMap.getString("jSplitPane3.TabConstraints.tabTitle"), jSplitPane3); // NOI18N
+
+        mainPanel.add(jTabbedPane1);
+        jTabbedPane1.setBounds(0, 50, 390, 220);
 
         statusPanel.setName("statusPanel"); // NOI18N
 
@@ -516,75 +477,33 @@ public class MemoView extends FrameView implements ActionListener {
         );
 
         setComponent(mainPanel);
-        setMenuBar(menuBar);
         setStatusBar(statusPanel);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void TreeMemoHandler(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TreeMemoHandler
-
-        TreePath path = treeMemo.getPathForLocation(evt.getX(), evt.getY());
-        if (path == null) {  //JTree上没有任何项被选中
-            return;
-        }
-
-        treeMemo.setSelectionPath(path);
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
-        Memo m = (Memo) node.getUserObject();
-
-        htmlEditor.setHTMLContent(m.getContent() != null ? m.getContent() : "");
-
-        labelTitle.setText(m.getName());
-        if (MouseEvent.BUTTON1 == evt.getButton()) {
-        } else if (evt.getButton() == MouseEvent.BUTTON3) {
-            popMenu.show(treeMemo, evt.getX(), evt.getY());
-        }
-    }//GEN-LAST:event_TreeMemoHandler
 
     /**
      * 保存
      * @param evt
-     */
-    private void saveHandler(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveHandler
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
-        String content = htmlEditor.getHTMLContent();
-        if(node == null || content == null) {
-            return;
-        }
-        Memo m = (Memo) node.getUserObject();
-        m.setContent(content);
-        m.update();
-        statusMessageLabel.setText("已成功保存！");
-    }//GEN-LAST:event_saveHandler
-
-    private void treeWillExpandHandler(javax.swing.event.TreeExpansionEvent evt)throws javax.swing.tree.ExpandVetoException {//GEN-FIRST:event_treeWillExpandHandler
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
-        for (int i = 0; i < node.getChildCount(); i++) {
-            DefaultMutableTreeNode c = (DefaultMutableTreeNode) node.getChildAt(i);
-            appendChildren((Memo) c.getUserObject(), c);
-
-        }
-    }//GEN-LAST:event_treeWillExpandHandler
-    /**
+     */    /**
      * 为子节点 初始化其子节点 
      * @param evt
      * @throws javax.swing.tree.ExpandVetoException
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JLabel labelTitle;
+    private javax.swing.JSplitPane jSplitPane3;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JTree jTree1;
     private javax.swing.JPanel mainPanel;
-    private javax.swing.JMenuBar menuBar;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JLabel statusAnimationLabel;
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
-    private javax.swing.JMenu switchMenu;
-    private javax.swing.JTree treeMemo;
     // End of variables declaration//GEN-END:variables
     private javax.swing.JSplitPane jSplitPane2;
     private JScrollPane jScrollPane2;
@@ -606,60 +525,60 @@ public class MemoView extends FrameView implements ActionListener {
     static JHTMLEditor htmlEditor;
 
     public void actionPerformed(ActionEvent e) {
-
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();  //获得右键选中的节点
-        if (e.getSource() == addItem) {
-            Memo m = new Memo();
-            m.setName("新建文档");
-            DefaultMutableTreeNode n = new DefaultMutableTreeNode(m);
-
-            node.add(n);
-
-            treeMemo.expandPath(treeMemo.getSelectionPath());
-            treeMemo.updateUI();
-            TreeNode[] nodes = treeModel.getPathToRoot(n);
-            TreePath path = new TreePath(nodes);
-            treeMemo.setSelectionPath(path);
-            treeMemo.scrollPathToVisible(path);
-            treeMemo.updateUI();
-
-
-
-            treeMemo.startEditingAtPath(path);
-            labelTitle.setText("");
-
-
-        } else if (e.getSource() == delItem) {
-
-            int messageType = JOptionPane.INFORMATION_MESSAGE;
-            int optionType = JOptionPane.YES_NO_OPTION;
-
-            int result = JOptionPane.showConfirmDialog(jPanel1, "确定要删除吗?", "提示",
-                    optionType, messageType);
-
-            if (result == JOptionPane.YES_OPTION) {
-
-                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
-                if (selectedNode != null && selectedNode.getParent() != null) {
-                    // 删除指定节点
-                    treeModel.removeNodeFromParent(selectedNode);
-                    Memo m = (Memo) selectedNode.getUserObject();
-                    if (m.getId() != null) {
-                        Memo.db.update("delete from memo where id = ?", m.getId());
-                    }
-
-                }
-
-            }
-
-        }
+//
+//        DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();  //获得右键选中的节点
+//        if (e.getSource() == addItem) {
+//            Memo m = new Memo();
+//            m.setName("新建文档");
+//            DefaultMutableTreeNode n = new DefaultMutableTreeNode(m);
+//
+//            node.add(n);
+//
+//            treeMemo.expandPath(treeMemo.getSelectionPath());
+//            treeMemo.updateUI();
+//            TreeNode[] nodes = treeModel.getPathToRoot(n);
+//            TreePath path = new TreePath(nodes);
+//            treeMemo.setSelectionPath(path);
+//            treeMemo.scrollPathToVisible(path);
+//            treeMemo.updateUI();
+//
+//
+//
+//            treeMemo.startEditingAtPath(path);
+//            labelTitle.setText("");
+//
+//
+//        } else if (e.getSource() == delItem) {
+//
+//            int messageType = JOptionPane.INFORMATION_MESSAGE;
+//            int optionType = JOptionPane.YES_NO_OPTION;
+//
+//            int result = JOptionPane.showConfirmDialog(jPanel1, "确定要删除吗?", "提示",
+//                    optionType, messageType);
+//
+//            if (result == JOptionPane.YES_OPTION) {
+//
+//                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
+//                if (selectedNode != null && selectedNode.getParent() != null) {
+//                    // 删除指定节点
+//                    treeModel.removeNodeFromParent(selectedNode);
+//                    Memo m = (Memo) selectedNode.getUserObject();
+//                    if (m.getId() != null) {
+//                        Memo.db.update("delete from memo where id = ?", m.getId());
+//                    }
+//
+//                }
+//
+//            }
+//
+//        }
     }
 
     private class CellEditorAction implements CellEditorListener {
 
         public void editingCanceled(ChangeEvent e) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
-            Memo m = (Memo) node.getUserObject();
+//            DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
+//            Memo m = (Memo) node.getUserObject();
         }
 
         public void editingStopped(ChangeEvent e) {
@@ -688,10 +607,12 @@ public class MemoView extends FrameView implements ActionListener {
                 }
 
                 m.insert();
-                labelTitle.setText(m.getName());
+//                labelTitle.setText(m.getName());/
             }
 
             nodeChanged(node);
         }
     }
+
+    
 }
