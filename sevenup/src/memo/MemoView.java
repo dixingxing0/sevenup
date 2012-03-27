@@ -44,6 +44,10 @@ import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.HTMLEditorAdapter;
 import chrriis.dj.nativeswing.swtimpl.components.HTMLEditorSaveEvent;
 import chrriis.dj.nativeswing.swtimpl.components.JHTMLEditor;
+import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
+import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
+import com.jgoodies.looks.plastic.PlasticLookAndFeel;
+import com.jgoodies.looks.plastic.theme.DesertBlue;
 import java.awt.AWTException;
 import java.awt.CardLayout;
 import java.awt.Frame;
@@ -61,6 +65,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JScrollPane;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
 /**
@@ -172,20 +177,6 @@ public class MemoView extends FrameView implements ActionListener {
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel1Layout.createSequentialGroup().addContainerGap().addComponent(labelTitle).addGap(8, 8, 8).addComponent(panelRichText, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)));
 
-
-//    SwingUtilities.invokeLater(new Runnable() {
-//      public void run() {
-//        JFrame frame = new JFrame("DJ Native Swing Test");
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.getContentPane().add(createContent(), BorderLayout.CENTER);
-//        frame.setSize(800, 600);
-//        frame.setLocationByPlatform(true);
-//        frame.setVisible(true);
-//      }
-//    });
-//        NativeInterface.runEventPump();
-
-
         this.frame = this.getFrame();
 
 
@@ -223,21 +214,23 @@ public class MemoView extends FrameView implements ActionListener {
 //        jPanel1 = new javax.swing.JPanel();
         mainPanel.add(jSplitPane2, "card2");
 
+        PlasticLookAndFeel.setPlasticTheme(new DesertBlue());
+       try {
+          UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
+       } catch (Exception e) {}
     }
 
     @Action
     public void switchMemoLayout() {
-        System.out.println("1111");
-        CardLayout cardLayout = (CardLayout)mainPanel.getLayout();
-       cardLayout.next(mainPanel);
+        CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
+        cardLayout.next(mainPanel);
     }
 
     @Action
-     public void switchJobLayout() {
-        System.out.println("2222");
-       CardLayout cardLayout = (CardLayout)mainPanel.getLayout();
-       cardLayout.next(mainPanel);
-       
+    public void switchJobLayout() {
+        CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
+        cardLayout.next(mainPanel);
+
     }
 
     /**
@@ -262,6 +255,7 @@ public class MemoView extends FrameView implements ActionListener {
 
         MenuItem exitItem = new MenuItem("退出");
         ActionListener listener2 = new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
@@ -348,19 +342,6 @@ public class MemoView extends FrameView implements ActionListener {
             }
         });
 
-        htmlEditor.addKeyListener(new KeyListener() {
-
-            public void keyTyped(KeyEvent e) {
-            }
-
-            public void keyPressed(KeyEvent e) {
-                System.out.println(e.getKeyCode());
-
-            }
-
-            public void keyReleased(KeyEvent e) {
-            }
-        });
         contentPane.add(htmlEditor, BorderLayout.CENTER);
 
         htmlEditor.setHTMLContent("");
@@ -392,6 +373,7 @@ public class MemoView extends FrameView implements ActionListener {
         switchMenu = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
         statusPanel = new javax.swing.JPanel();
         javax.swing.JSeparator statusPanelSeparator = new javax.swing.JSeparator();
         statusMessageLabel = new javax.swing.JLabel();
@@ -407,6 +389,13 @@ public class MemoView extends FrameView implements ActionListener {
 
         treeMemo.setName("treeMemo"); // NOI18N
         treeMemo.setRootVisible(false);
+        treeMemo.addTreeWillExpandListener(new javax.swing.event.TreeWillExpandListener() {
+            public void treeWillCollapse(javax.swing.event.TreeExpansionEvent evt)throws javax.swing.tree.ExpandVetoException {
+            }
+            public void treeWillExpand(javax.swing.event.TreeExpansionEvent evt)throws javax.swing.tree.ExpandVetoException {
+                treeWillExpandHandler(evt);
+            }
+        });
         treeMemo.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 TreeMemoHandler(evt);
@@ -427,16 +416,16 @@ public class MemoView extends FrameView implements ActionListener {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
+                .addGap(61, 61, 61)
                 .addComponent(labelTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(142, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(labelTitle)
-                .addContainerGap(227, Short.MAX_VALUE))
+                .addContainerGap(222, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel1);
@@ -479,10 +468,20 @@ public class MemoView extends FrameView implements ActionListener {
 
         menuBar.add(switchMenu);
 
+        jMenu1.setText(resourceMap.getString("jMenu1.text")); // NOI18N
+        jMenu1.setName("jMenu1"); // NOI18N
+        jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                saveHandler(evt);
+            }
+        });
+        menuBar.add(jMenu1);
+
         statusPanel.setName("statusPanel"); // NOI18N
 
         statusPanelSeparator.setName("statusPanelSeparator"); // NOI18N
 
+        statusMessageLabel.setText(resourceMap.getString("statusMessageLabel.text")); // NOI18N
         statusMessageLabel.setName("statusMessageLabel"); // NOI18N
 
         statusAnimationLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -498,7 +497,7 @@ public class MemoView extends FrameView implements ActionListener {
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(statusMessageLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 262, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 232, Short.MAX_VALUE)
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(statusAnimationLabel)
@@ -541,7 +540,37 @@ public class MemoView extends FrameView implements ActionListener {
         }
     }//GEN-LAST:event_TreeMemoHandler
 
+    /**
+     * 保存
+     * @param evt
+     */
+    private void saveHandler(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveHandler
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
+        String content = htmlEditor.getHTMLContent();
+        if(node == null || content == null) {
+            return;
+        }
+        Memo m = (Memo) node.getUserObject();
+        m.setContent(content);
+        m.update();
+        statusMessageLabel.setText("已成功保存！");
+    }//GEN-LAST:event_saveHandler
+
+    private void treeWillExpandHandler(javax.swing.event.TreeExpansionEvent evt)throws javax.swing.tree.ExpandVetoException {//GEN-FIRST:event_treeWillExpandHandler
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
+        for (int i = 0; i < node.getChildCount(); i++) {
+            DefaultMutableTreeNode c = (DefaultMutableTreeNode) node.getChildAt(i);
+            appendChildren((Memo) c.getUserObject(), c);
+
+        }
+    }//GEN-LAST:event_treeWillExpandHandler
+    /**
+     * 为子节点 初始化其子节点 
+     * @param evt
+     * @throws javax.swing.tree.ExpandVetoException
+     */
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
@@ -557,7 +586,6 @@ public class MemoView extends FrameView implements ActionListener {
     private javax.swing.JMenu switchMenu;
     private javax.swing.JTree treeMemo;
     // End of variables declaration//GEN-END:variables
-   
     private javax.swing.JSplitPane jSplitPane2;
     private JScrollPane jScrollPane2;
     private final Timer messageTimer;
@@ -635,7 +663,6 @@ public class MemoView extends FrameView implements ActionListener {
         }
 
         public void editingStopped(ChangeEvent e) {
-
         }
     }
 

@@ -18,13 +18,11 @@ import org.junit.Test;
 public class MemoTest {
 
     @Test
-    public void testQuery() {
-        Memo m = Memo.db.query("select * from memo where id=2");
-        Assert.assertNotNull(m);
-        m.setParentId(1L);
-        m.update();
-        m = Memo.db.query("select * from memo where id=2");
-        System.out.println(m.getParentId());
+    public void test() {
+      List<Memo> list = Memo.db.queryList("select * from memo");
+      for(Memo m : list) {
+          System.out.println(m.getId() + ":" + m + " " + m.getParentId());
+      }
     }
 
     @Test
@@ -32,7 +30,7 @@ public class MemoTest {
         Long maxId = Memo.db.queryLong("select max(id) from memo ");
 
         int i = 0;
-        for (; i < 10; maxId++,i++) {
+        for (; i < 0; maxId++,i++) {
             Memo m = new Memo();
             m.setId(maxId);
             m.setName("name" + maxId);
