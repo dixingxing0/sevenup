@@ -5,6 +5,7 @@ package memo;
 
 import entity.Memo;
 import java.awt.AWTEvent;
+import java.awt.event.FocusEvent;
 import java.beans.PropertyChangeEvent;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
@@ -59,20 +60,23 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.AWTEventListener;
 import java.awt.event.ContainerAdapter;
+import java.awt.event.FocusAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import org.apache.log4j.Logger;
 
 /**
  * The application's main frame.
  */
 public class MemoView extends FrameView implements ActionListener {
-
+    private static final Logger logger = Logger.getLogger(MemoView.class);
     public MemoView(SingleFrameApplication app) {
         super(app);
 
@@ -139,7 +143,6 @@ public class MemoView extends FrameView implements ActionListener {
 
         treeMemo.setModel(treeModel);
         treeMemo.setEditable(true);
-        treeMemo.getCellEditor().addCellEditorListener(new CellEditorAction());
 //        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
 //        renderer.setLeafIcon(new ImageIcon("1.gif"));
 //        renderer.setClosedIcon(new ImageIcon("2.gif"));
@@ -218,6 +221,36 @@ public class MemoView extends FrameView implements ActionListener {
        try {
           UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
        } catch (Exception e) {}
+
+        Image image = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("logo.png"));
+        frame.setIconImage(image);
+
+        treeMemo.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent evt) {
+                TreePath path = treeMemo.getPathForLocation(evt.getX(), evt.getY());
+                if (path == null) {  //JTree上没有任何项被选中
+                    return;
+                }
+
+                treeMemo.setSelectionPath(path);
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
+                Memo m = (Memo) node.getUserObject();
+
+                htmlEditor.setHTMLContent(m.getContent() != null ? m.getContent() : "");
+
+                labelTitle.setText(m.getName());
+                currentMemo = m;
+                if (MouseEvent.BUTTON1 == evt.getButton()) {
+                } else if (evt.getButton() == MouseEvent.BUTTON3) {
+                    popMenu.show(treeMemo, evt.getX(), evt.getY());
+                }
+            }
+
+        });
+
+
     }
 
     @Action
@@ -237,7 +270,7 @@ public class MemoView extends FrameView implements ActionListener {
      * 初始化系统托盘
      */
     private void initTrayIcon() {
-        Image image = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("idle-icon.png"));
+        Image image = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("logo.png"));
         PopupMenu popup = new PopupMenu();
         MenuItem openItem = new MenuItem("打开主界面");
         ActionListener listener = new ActionListener() {
@@ -320,7 +353,7 @@ public class MemoView extends FrameView implements ActionListener {
         MemoApp.getApplication().show(aboutBox);
     }
 
-    public static JComponent createContent() {
+    public JComponent createContent() {
         final JPanel contentPane = new JPanel(new BorderLayout());
         Map<String, String> optionMap = new HashMap<String, String>();
         optionMap.put("theme_advanced_buttons1", "'bold,italic,underline,strikethrough,sub,sup,|,charmap,|,justifyleft,justifycenter,justifyright,justifyfull,|,hr,removeformat'");
@@ -338,10 +371,14 @@ public class MemoView extends FrameView implements ActionListener {
 
             @Override
             public void saveHTML(HTMLEditorSaveEvent e) {
-                JOptionPane.showMessageDialog(contentPane, "The data of the HTML editor could be saved anywhere...");
+                if(currentMemo != null && currentMemo.getId() != null) {
+                    currentMemo.setContent(htmlEditor.getHTMLContent());
+                    currentMemo.update();
+                    statusMessageLabel.setText("已保存！");
+                } 
+//                JOptionPane.showMessageDialog(contentPane, "The data of the HTML editor could be saved anywhere...");
             }
         });
-
         contentPane.add(htmlEditor, BorderLayout.CENTER);
 
         htmlEditor.setHTMLContent("");
@@ -373,7 +410,6 @@ public class MemoView extends FrameView implements ActionListener {
         switchMenu = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
         statusPanel = new javax.swing.JPanel();
         javax.swing.JSeparator statusPanelSeparator = new javax.swing.JSeparator();
         statusMessageLabel = new javax.swing.JLabel();
@@ -381,9 +417,12 @@ public class MemoView extends FrameView implements ActionListener {
         progressBar = new javax.swing.JProgressBar();
 
         mainPanel.setName("mainPanel"); // NOI18N
+        mainPanel.setPreferredSize(new java.awt.Dimension(700, 500));
         mainPanel.setLayout(new java.awt.CardLayout());
 
+        jSplitPane1.setDividerLocation(200);
         jSplitPane1.setName("jSplitPane1"); // NOI18N
+        jSplitPane1.setPreferredSize(new java.awt.Dimension(650, 480));
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
@@ -396,16 +435,12 @@ public class MemoView extends FrameView implements ActionListener {
                 treeWillExpandHandler(evt);
             }
         });
-        treeMemo.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                TreeMemoHandler(evt);
-            }
-        });
         jScrollPane1.setViewportView(treeMemo);
 
         jSplitPane1.setLeftComponent(jScrollPane1);
 
         jPanel1.setName("jPanel1"); // NOI18N
+        jPanel1.setPreferredSize(new java.awt.Dimension(400, 420));
 
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(memo.MemoApp.class).getContext().getResourceMap(MemoView.class);
         labelTitle.setText(resourceMap.getString("labelTitle.text")); // NOI18N
@@ -418,14 +453,14 @@ public class MemoView extends FrameView implements ActionListener {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(61, 61, 61)
                 .addComponent(labelTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(142, Short.MAX_VALUE))
+                .addContainerGap(498, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(labelTitle)
-                .addContainerGap(222, Short.MAX_VALUE))
+                .addContainerGap(451, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel1);
@@ -468,15 +503,6 @@ public class MemoView extends FrameView implements ActionListener {
 
         menuBar.add(switchMenu);
 
-        jMenu1.setText(resourceMap.getString("jMenu1.text")); // NOI18N
-        jMenu1.setName("jMenu1"); // NOI18N
-        jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                saveHandler(evt);
-            }
-        });
-        menuBar.add(jMenu1);
-
         statusPanel.setName("statusPanel"); // NOI18N
 
         statusPanelSeparator.setName("statusPanelSeparator"); // NOI18N
@@ -493,11 +519,11 @@ public class MemoView extends FrameView implements ActionListener {
         statusPanel.setLayout(statusPanelLayout);
         statusPanelLayout.setHorizontalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 432, Short.MAX_VALUE)
+            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 926, Short.MAX_VALUE)
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(statusMessageLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 232, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 726, Short.MAX_VALUE)
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(statusAnimationLabel)
@@ -520,43 +546,12 @@ public class MemoView extends FrameView implements ActionListener {
         setStatusBar(statusPanel);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void TreeMemoHandler(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TreeMemoHandler
-
-        TreePath path = treeMemo.getPathForLocation(evt.getX(), evt.getY());
-        if (path == null) {  //JTree上没有任何项被选中
-            return;
-        }
-
-        treeMemo.setSelectionPath(path);
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
-        Memo m = (Memo) node.getUserObject();
-
-        htmlEditor.setHTMLContent(m.getContent() != null ? m.getContent() : "");
-
-        labelTitle.setText(m.getName());
-        if (MouseEvent.BUTTON1 == evt.getButton()) {
-        } else if (evt.getButton() == MouseEvent.BUTTON3) {
-            popMenu.show(treeMemo, evt.getX(), evt.getY());
-        }
-    }//GEN-LAST:event_TreeMemoHandler
-
     /**
      * 保存
      * @param evt
      */
-    private void saveHandler(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveHandler
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
-        String content = htmlEditor.getHTMLContent();
-        if(node == null || content == null) {
-            return;
-        }
-        Memo m = (Memo) node.getUserObject();
-        m.setContent(content);
-        m.update();
-        statusMessageLabel.setText("已成功保存！");
-    }//GEN-LAST:event_saveHandler
-
     private void treeWillExpandHandler(javax.swing.event.TreeExpansionEvent evt)throws javax.swing.tree.ExpandVetoException {//GEN-FIRST:event_treeWillExpandHandler
+        treeMemo.setSelectionPath(evt.getPath());
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
         for (int i = 0; i < node.getChildCount(); i++) {
             DefaultMutableTreeNode c = (DefaultMutableTreeNode) node.getChildAt(i);
@@ -570,7 +565,6 @@ public class MemoView extends FrameView implements ActionListener {
      * @throws javax.swing.tree.ExpandVetoException
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
@@ -605,6 +599,8 @@ public class MemoView extends FrameView implements ActionListener {
     final static JTextArea htmlTextArea = new JTextArea();
     static JHTMLEditor htmlEditor;
 
+    private static Memo currentMemo;
+
     public void actionPerformed(ActionEvent e) {
 
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();  //获得右键选中的节点
@@ -612,22 +608,44 @@ public class MemoView extends FrameView implements ActionListener {
             Memo m = new Memo();
             m.setName("新建文档");
             DefaultMutableTreeNode n = new DefaultMutableTreeNode(m);
-
+            logger.debug("---1");
             node.add(n);
+            logger.debug("---2");
 
             treeMemo.expandPath(treeMemo.getSelectionPath());
+            logger.debug("---3");
             treeMemo.updateUI();
+            logger.debug("---4");
             TreeNode[] nodes = treeModel.getPathToRoot(n);
+            logger.debug("---5");
             TreePath path = new TreePath(nodes);
+            logger.debug("---6");
             treeMemo.setSelectionPath(path);
+            logger.debug("---7");
             treeMemo.scrollPathToVisible(path);
+            logger.debug("---8");
             treeMemo.updateUI();
-
-
-
+            logger.debug("---9");
             treeMemo.startEditingAtPath(path);
-            labelTitle.setText("");
+            logger.debug("---10");
 
+            if (node.getUserObject().getClass().equals(Memo.class)) {
+                logger.debug("---11");
+                Memo p = (Memo) node.getUserObject();
+                logger.debug("---12");
+                m.setParentId(p.getId());
+                logger.debug("---13");
+                // 直接插入到数据库中
+                m.insert();
+                logger.debug("---17");
+                currentMemo = m;
+                logger.debug("---18");
+                labelTitle.setText(m.getName());
+                logger.debug("---19");
+                htmlEditor.setHTMLContent("");
+                logger.debug("---20");
+            }
+           
 
         } else if (e.getSource() == delItem) {
 
@@ -636,10 +654,12 @@ public class MemoView extends FrameView implements ActionListener {
 
             int result = JOptionPane.showConfirmDialog(jPanel1, "确定要删除吗?", "提示",
                     optionType, messageType);
-
+            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
+            if(selectedNode.getChildCount() > 0) {
+                JOptionPane.showMessageDialog(jPanel1, "有子节点不能删除!");
+                return ;
+            }
             if (result == JOptionPane.YES_OPTION) {
-
-                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
                 if (selectedNode != null && selectedNode.getParent() != null) {
                     // 删除指定节点
                     treeModel.removeNodeFromParent(selectedNode);
@@ -652,17 +672,6 @@ public class MemoView extends FrameView implements ActionListener {
 
             }
 
-        }
-    }
-
-    private class CellEditorAction implements CellEditorListener {
-
-        public void editingCanceled(ChangeEvent e) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
-            Memo m = (Memo) node.getUserObject();
-        }
-
-        public void editingStopped(ChangeEvent e) {
         }
     }
 
@@ -680,15 +689,6 @@ public class MemoView extends FrameView implements ActionListener {
 
             if (m.getId() != null) {
                 m.update();
-            } else {
-                DefaultMutableTreeNode parent = (DefaultMutableTreeNode) node.getParent();
-                if (parent.getUserObject().getClass().equals(Memo.class)) {
-                    Memo p = (Memo) parent.getUserObject();
-                    m.setParentId(p.getId());
-                }
-
-                m.insert();
-                labelTitle.setText(m.getName());
             }
 
             nodeChanged(node);

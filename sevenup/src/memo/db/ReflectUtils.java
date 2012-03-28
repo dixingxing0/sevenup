@@ -115,7 +115,14 @@ public class ReflectUtils {
 	 */
 	public static void set(Object obj, String fieldName, Object value) {
 		try {
-			Field f = obj.getClass().getField(fieldName);
+            Field f = null;
+            for(Field fd : obj.getClass().getDeclaredFields()) {
+                if(fd.getName() != null && fd.getName().equals(fieldName)) {
+                    f = fd;
+                    break;
+                }
+            }
+			
 			if (f.isAccessible()) {
 				f.set(obj, value);
 			} else {

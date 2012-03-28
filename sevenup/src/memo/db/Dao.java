@@ -5,6 +5,7 @@
  */
 package memo.db;
 
+import entity.Memo;
 import java.lang.reflect.ParameterizedType;
 import java.math.BigInteger;
 import java.sql.Connection;
@@ -17,6 +18,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.dbutils.BasicRowProcessor;
+import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
@@ -203,7 +205,11 @@ public class Dao<T> {
 	public int update(String sql, Object... params) {
 		logger.debug(new SqlHolder(sql, params));
 		try {
-			return runner.update(getConn(), sql, params);
+            Connection conn = getConn();
+            conn.setAutoCommit(false);
+			int i = runner.update(conn, sql, params);
+            DbUtils.commitAndCloseQuietly(conn);
+            return i;
 		} catch (SQLException e) {
 			logger.error(ERROR, e);
 			throw new RuntimeException(ERROR, e);
@@ -221,12 +227,29 @@ public class Dao<T> {
 
 	/**
 	 * insert
+     * 默认为自动生成id
 	 * @return
 	 */
-	public int insert() {
+	public Long insert() {
 		SqlHolder holder = SqlBuilder.buildInsert(this);
-		return update(holder.getSql(), holder.getParams());
+		int i = update(holder.getSql(), holder.getParams());
+        logger.debug("---14 :" + i);
+        // 此处查询sqllite3 上一个生成的主键id
+        Long id = queryLong(SqlBuilder.buildGetInsertId(this));
+        logger.debug("---15 :" + id);
+        ReflectUtils.set(this, "id", id);
+
+        logger.debug("---16 :" + id);
+        return id;
 	}
+
+    public static void main(String[] args) {
+        Memo m = new Memo();
+        m.setParentId(20L);
+        m.setName("新建文档");
+        m.insert();
+        System.out.println(m.getId());
+    }
 
 	/**
 	 *

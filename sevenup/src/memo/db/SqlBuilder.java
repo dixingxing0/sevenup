@@ -3,34 +3,33 @@
  * Copyright(c) 2000-2012 HC360.COM, All Rights Reserved.
  */
 package memo.db;
-
-
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.Date;
 
 import memo.db.annotation.Column;
+import memo.db.annotation.Table;
+import memo.db.annotation.Transient;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import memo.db.annotation.Table;
-import memo.db.annotation.Transient;
+
 
 /**
- * ���pojo����SqlHolder <br />
- * ���oracle��sql
- * 
+ * 根据pojo构造SqlHolder <br />
+ * 生成oracle的sql
+ *
  * @see SqlHolder
  * @author dixingxing
  * @date Feb 6, 2012
  */
 public class SqlBuilder {
-//	private final static Logger logger = Logger.getLogger(SqlBuilder.class);
+	private final static Logger logger = Logger.getLogger(SqlBuilder.class);
 	private final static String ID = "id";
 
 	/**
-	 * ����insert
-	 * 
+	 * 构造insert
+	 *
 	 * @param po
 	 * @return
 	 */
@@ -58,15 +57,14 @@ public class SqlBuilder {
 		sql.append(columns).append(") ");
 		sql.append(" VALUES(").append(values).append(") ");
 		holder.setSql(sql.toString());
-//		logger.debug(holder);
 		return holder;
 
 	}
 
 	/**
-	 * ������� where id= po.getId();
-	 * 
-	 * 
+	 * 更新条件 where id= po.getId();
+	 *
+	 *
 	 * @param po
 	 * @return
 	 */
@@ -74,39 +72,38 @@ public class SqlBuilder {
 		return buildUpdate(po, "id=" + ReflectUtils.getValueByFieldName(po, ID));
 	}
 
+    /**
+     * sqlite3 insert 后返回生成的主键（id）
+     * @param po
+     * @return
+     */
+    public static String buildGetInsertId(Object po) {
+        return "select max(id) from " + tableName(po);
+    }
+
 	/**
-	 * ��sql��װ�ɷ�ҳ��sql
-	 * 
+	 * 把sql封装成分页的sql
+	 *
 	 * @param sql
-	 *            ����Ĳ�ѯ���
+	 *            完整的查询语句
 	 * @param start
 	 * @param end
 	 * @return
 	 */
 	public static String pageSql(String sql, int start, int end) {
 		StringBuilder pageSql = new StringBuilder();
-//		if (Config.isMysql()) {
-//			pageSql.append(sql).append(" limit ").append(start).append(",")
-//					.append(end);
-//		} else if (Config.isOracle()) {
-//			pageSql
-//					.append("select * from (select tmp_tb.*,ROWNUM row_id from (");
-//			pageSql.append(sql);
-//			pageSql.append(")  tmp_tb where ROWNUM<=");
-//			pageSql.append(end);
-//			pageSql.append(") where row_id>");
-//			pageSql.append(start);
-//		}
+			pageSql.append(sql).append(" limit ").append(start).append(",")
+					.append(end);
 
 		return pageSql.toString();
 	}
 
 	/**
-	 * 
-	 * ��sqlת���ɲ�ѯ�����sql
-	 * 
+	 *
+	 * 把sql转换成查询总数的sql
+	 *
 	 * @param sql
-	 *            ����Ĳ�ѯ���
+	 *            完整的查询语句
 	 * @return
 	 */
 	public static String countSql(String sql) {
@@ -117,11 +114,11 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * ����update
-	 * 
+	 * 构造update
+	 *
 	 * @param po
 	 * @param where
-	 *            ������Ϊ��
+	 *            不允许为空
 	 * @return
 	 */
 	private static SqlHolder buildUpdate(Object po, String where) {
@@ -142,14 +139,13 @@ public class SqlBuilder {
 		deleteLastComma(sql);
 		sql.append(" WHERE ").append(where);
 		holder.setSql(sql.toString());
-//		logger.debug(holder);
 		return holder;
 
 	}
 
 	/**
-	 * ɾ������Ǹ�,��
-	 * 
+	 * 删除最后那个“,”
+	 *
 	 * @param sb
 	 */
 	private static void deleteLastComma(StringBuilder sb) {
@@ -159,10 +155,10 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * ��ȡ����<br/>
-	 * MyBeanProcessor�ж����˲�ѯʱ����ݿ��ֶ�ת -> po���� �Ĺ���,<br />
-	 * �˴�po���� -> ��ݿ��ֶ� �Ĺ����ǰ�汣��һ��
-	 * 
+	 * 获取列名<br/>
+	 * MyBeanProcessor中定义了查询时从数据库字段转 -> po属性 的规则,<br />
+	 * 此处po属性 -> 数据库字段 的规则和前面保持一致
+	 *
 	 * @see DbUtilsBeanProcessor#prop2column(String)
 	 * @param f
 	 * @return
@@ -172,14 +168,14 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 
-	 * �����Ƿ�����޸�
-	 * 
+	 *
+	 * 属性是否可以修改
+	 *
 	 * @param obj
 	 * @return
 	 */
 	private static boolean isUpdatable(Field f) {
-		// id �����޸�
+		// id 不能修改
 		if (ID.equals(f.getName())) {
 			return false;
 		}
@@ -188,9 +184,9 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 
-	 * �����Ƿ���Ҫ�־û�
-	 * 
+	 *
+	 * 属性是否不需要持久化
+	 *
 	 * @param obj
 	 * @return
 	 */
@@ -203,9 +199,9 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 
-	 * ��ȡ����
-	 * 
+	 *
+	 * 获取表名
+	 *
 	 * @param obj
 	 * @return
 	 */
@@ -219,9 +215,9 @@ public class SqlBuilder {
 	}
 
 	/**
-	 * 
-	 * java����ת������ݿ�����
-	 * 
+	 *
+	 * java类型转换成数据库类型
+	 *
 	 * @param o
 	 * @return
 	 */
