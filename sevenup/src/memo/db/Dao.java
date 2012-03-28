@@ -52,8 +52,8 @@ public class Dao<T> {
 	private static synchronized DataSource initDataSource() {
 		BasicDataSource ds = new BasicDataSource();
 		ds.setDriverClassName("org.sqlite.JDBC");
-		ds.setUrl("jdbc:sqlite://E:/sevenup-git/sevenup/test.db");
-//        ds.setUrl("jdbc:sqlite://E:/workspace/sevenup-git/sevenup/test.db");
+//		ds.setUrl("jdbc:sqlite://E:/sevenup-git/sevenup/test.db");
+        ds.setUrl("jdbc:sqlite://E:/workspace/sevenup-git/sevenup/test.db");
 		return ds;
 	}
 
