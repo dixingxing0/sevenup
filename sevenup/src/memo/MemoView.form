@@ -48,9 +48,6 @@
                     <Property name="name" type="java.lang.String" value="treeMemo" noResource="true"/>
                     <Property name="rootVisible" type="boolean" value="false"/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="treeWillExpand" listener="javax.swing.event.TreeWillExpandListener" parameters="javax.swing.event.TreeExpansionEvent" handler="treeWillExpandHandler"/>
-                  </Events>
                 </Component>
               </SubComponents>
             </Container>
@@ -82,7 +79,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="labelTitle" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="455" max="32767" attributes="0"/>
+                          <EmptySpace pref="451" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -123,7 +120,7 @@
                   <Group type="102" attributes="0">
                       <Component id="jToolBar1" min="-2" pref="25" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane3" pref="451" max="32767" attributes="0"/>
+                      <Component id="jScrollPane3" pref="447" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>

@@ -54,8 +54,8 @@ public class Dao<T> {
 	private static synchronized DataSource initDataSource() {
 		BasicDataSource ds = new BasicDataSource();
 		ds.setDriverClassName("org.sqlite.JDBC");
-//		ds.setUrl("jdbc:sqlite://E:/sevenup-git/sevenup/test.db");
-        ds.setUrl("jdbc:sqlite://E:/workspace/sevenup-git/sevenup/test.db");
+		ds.setUrl("jdbc:sqlite://E:/sevenup-git/sevenup/test.db");
+//        ds.setUrl("jdbc:sqlite://E:/workspace/sevenup-git/sevenup/test.db");
 		return ds;
 	}
 
@@ -233,13 +233,10 @@ public class Dao<T> {
 	public Long insert() {
 		SqlHolder holder = SqlBuilder.buildInsert(this);
 		int i = update(holder.getSql(), holder.getParams());
-        logger.debug("---14 :" + i);
         // 此处查询sqllite3 上一个生成的主键id
         Long id = queryLong(SqlBuilder.buildGetInsertId(this));
-        logger.debug("---15 :" + id);
         ReflectUtils.set(this, "id", id);
 
-        logger.debug("---16 :" + id);
         return id;
 	}
 
