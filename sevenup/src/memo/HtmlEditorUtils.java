@@ -40,7 +40,7 @@ public class HtmlEditorUtils {
         });
         contentPane.add(htmlEditor, BorderLayout.CENTER);
         htmlEditor.setHTMLContent("");
-
-        MemoView.getInstantce().setPanelRichText(contentPane);
+MemoView.getInstantce().getPanelRichText().setLayout(new BorderLayout());
+        MemoView.getInstantce().getPanelRichText().add(contentPane);
     }
 }

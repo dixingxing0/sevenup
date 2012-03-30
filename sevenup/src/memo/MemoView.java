@@ -105,10 +105,7 @@ public class MemoView extends FrameView {
         Utils.setLogo(frame);
 
         // 初始化html编辑器
-        HtmlEditorUtils.init();
-
-        // 初始化layout
-        initLayout();
+//        HtmlEditorUtils.init();
 
         // 设置系统托盘
         TrayIocnUtils.initTrayIcon(frame);
@@ -116,23 +113,10 @@ public class MemoView extends FrameView {
         // 初始化jobtable
         JobTableUtils.init();
 
-        switchMemoLayout();
+//        switchMemoLayout();
     }
 
     // <editor-fold defaultstate="collapsed" desc="layout and menu">
-    /**
-     * 初始化layout 此方法会卡住界面
-     */
-    private void initLayout() {
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(panelRichText, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE).addGroup(jPanel1Layout.createSequentialGroup().addGap(10, 10, 10).addComponent(labelTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE).addContainerGap()));
-        jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel1Layout.createSequentialGroup().addContainerGap().addComponent(labelTitle).addGap(8, 8, 8).addComponent(panelRichText, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)));
-
-    }
-
     /**
      * 初始化菜单
      */
@@ -184,6 +168,7 @@ public class MemoView extends FrameView {
         treeMemo = new javax.swing.JTree();
         jPanel1 = new javax.swing.JPanel();
         labelTitle = new javax.swing.JLabel();
+        panelRichText = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         jButton1 = new javax.swing.JButton();
@@ -227,6 +212,19 @@ public class MemoView extends FrameView {
         labelTitle.setText(resourceMap.getString("labelTitle.text")); // NOI18N
         labelTitle.setName("labelTitle"); // NOI18N
 
+        panelRichText.setName("panelRichText"); // NOI18N
+
+        javax.swing.GroupLayout panelRichTextLayout = new javax.swing.GroupLayout(panelRichText);
+        panelRichText.setLayout(panelRichTextLayout);
+        panelRichTextLayout.setHorizontalGroup(
+            panelRichTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1007, Short.MAX_VALUE)
+        );
+        panelRichTextLayout.setVerticalGroup(
+            panelRichTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 433, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -235,13 +233,15 @@ public class MemoView extends FrameView {
                 .addGap(61, 61, 61)
                 .addComponent(labelTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(785, Short.MAX_VALUE))
+            .addComponent(panelRichText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(labelTitle)
-                .addContainerGap(451, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(panelRichText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel1);
@@ -413,6 +413,7 @@ public class MemoView extends FrameView {
     private javax.swing.JLabel labelTitle;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JPanel panelRichText;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JLabel statusAnimationLabel;
     private javax.swing.JLabel statusMessageLabel;
@@ -429,7 +430,6 @@ public class MemoView extends FrameView {
     public static JPopupMenu popMenu; //菜单
     JMenuItem addItem;   //各个菜单项
     JMenuItem delItem;
-    JPanel panelRichText;
     protected static final String LS = System.getProperty("line.separator");
     private final JFrame frame;
     public static JHTMLEditor htmlEditor;
@@ -454,10 +454,6 @@ public class MemoView extends FrameView {
 
     public JLabel getStatusMessageLabel() {
         return statusMessageLabel;
-    }
-
-    public void setPanelRichText(JPanel panelRichText) {
-        this.panelRichText = panelRichText;
     }
 
     public Timer getBusyIconTimer() {
@@ -490,6 +486,10 @@ public class MemoView extends FrameView {
 
     public Timer getMessageTimer() {
         return messageTimer;
+    }
+
+    public JPanel getPanelRichText() {
+        return panelRichText;
     }
 
 }

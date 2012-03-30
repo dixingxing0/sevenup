@@ -102,10 +102,16 @@ public class MemoTreeListener implements ActionListener, MouseListener, TreeWill
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMemo.getLastSelectedPathComponent();
         Memo m = (Memo) node.getUserObject();
 
+        MemoView.getInstantce().getLabelTitle().setText(m.getName());
+
+        MemoView.currentMemo = m;
+        //首次点击左侧树 初始化html编辑器
+        if (MemoView.htmlEditor == null) {
+            HtmlEditorUtils.init();
+        }
         MemoView.htmlEditor.setHTMLContent(m.getContent() != null ? m.getContent() : "");
 
-        MemoView.getInstantce().getLabelTitle().setText(m.getName());
-        MemoView.currentMemo = m;
+
         if (MouseEvent.BUTTON1 == evt.getButton()) {
         } else if (evt.getButton() == MouseEvent.BUTTON3) {
             MemoView.popMenu.show(treeMemo, evt.getX(), evt.getY());
