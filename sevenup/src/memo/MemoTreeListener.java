@@ -45,7 +45,7 @@ public class MemoTreeListener implements ActionListener, MouseListener, TreeWill
                 m.setParentId(p.getId());
                 // 直接插入到数据库中
                 m.insert();
-                MemoView.currentMemo = m;
+                MemoView.setCurrentMemo(m);
                 MemoView.getInstantce().getLabelTitle().setText(m.getName());
                 MemoView.htmlEditor.setHTMLContent("");
             }
@@ -104,7 +104,7 @@ public class MemoTreeListener implements ActionListener, MouseListener, TreeWill
 
         MemoView.getInstantce().getLabelTitle().setText(m.getName());
 
-        MemoView.currentMemo = m;
+        MemoView.setCurrentMemo(m);
         //首次点击左侧树 初始化html编辑器
         if (MemoView.htmlEditor == null) {
             HtmlEditorUtils.init();

@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package memo;
 
 import chrriis.dj.nativeswing.swtimpl.components.HTMLEditorAdapter;
@@ -19,19 +18,21 @@ import javax.swing.JPanel;
  * @author hc360
  */
 public class HtmlEditorUtils {
+
     public static void init() {
         final JPanel contentPane = new JPanel(new BorderLayout());
         Map<String, String> optionMap = new HashMap<String, String>();
         MemoView.htmlEditor = new JHTMLEditor(JHTMLEditor.HTMLEditorImplementation.TinyMCE,
                 JHTMLEditor.TinyMCEOptions.setOptions(optionMap));
-        
-        final JHTMLEditor htmlEditor =  MemoView.htmlEditor;
-        final Memo currentMemo = MemoView.currentMemo;
-        
+
+        final JHTMLEditor htmlEditor = MemoView.htmlEditor;
+       
+
         htmlEditor.addHTMLEditorListener(new HTMLEditorAdapter() {
             @Override
             public void saveHTML(HTMLEditorSaveEvent e) {
-                if(currentMemo != null && currentMemo.getId() != null) {
+                 Memo currentMemo = MemoView.getCurrentMemo();
+                if (currentMemo != null && currentMemo.getId() != null) {
                     currentMemo.setContent(htmlEditor.getHTMLContent());
                     currentMemo.update();
                     MemoView.getInstantce().getStatusMessageLabel().setText("已保存！");
@@ -40,7 +41,7 @@ public class HtmlEditorUtils {
         });
         contentPane.add(htmlEditor, BorderLayout.CENTER);
         htmlEditor.setHTMLContent("");
-MemoView.getInstantce().getPanelRichText().setLayout(new BorderLayout());
+        MemoView.getInstantce().getPanelRichText().setLayout(new BorderLayout());
         MemoView.getInstantce().getPanelRichText().add(contentPane);
     }
 }

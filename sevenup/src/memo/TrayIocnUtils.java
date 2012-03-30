@@ -58,7 +58,7 @@ public class TrayIocnUtils {
         exitItem.addActionListener(listener2);
         popup.add(exitItem);
         //根据image、提示、菜单创建TrayIcon
-        trayIcon = new TrayIcon(image, "sevenup", popup);
+        trayIcon = new TrayIcon(image, "七喜备忘录", popup);
         //给TrayIcon添加事件监听器
         trayIcon.addActionListener(listener);
 

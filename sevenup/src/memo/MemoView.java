@@ -116,7 +116,7 @@ public class MemoView extends FrameView {
 //        switchMemoLayout();
     }
 
-    // <editor-fold defaultstate="collapsed" desc="layout and menu">
+    // <editor-fold defaultstate="collapsed" desc=" menu">
     /**
      * 初始化菜单
      */
@@ -433,7 +433,7 @@ public class MemoView extends FrameView {
     protected static final String LS = System.getProperty("line.separator");
     private final JFrame frame;
     public static JHTMLEditor htmlEditor;
-    public static Memo currentMemo;
+    private static Memo currentMemo;
     public static TaskMonitor taskMonitor;
 
     public JTree getTreeMemo() {
@@ -490,6 +490,14 @@ public class MemoView extends FrameView {
 
     public JPanel getPanelRichText() {
         return panelRichText;
+    }
+
+    public static void setCurrentMemo(Memo currentMemo) {
+        MemoView.currentMemo = currentMemo;
+    }
+
+    public static Memo getCurrentMemo() {
+        return currentMemo;
     }
 
 }
